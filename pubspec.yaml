@@ -9,6 +9,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  
+  date_picker_plus: ^2.1.0
+  uuid: ^4.3.2
 
 dev_dependencies:
   flutter_test:

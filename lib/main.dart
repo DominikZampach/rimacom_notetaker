@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rimacom_notetaker/pages/edit_note.dart';
 import 'package:rimacom_notetaker/pages/homepage.dart';
 
 void main() {
@@ -12,19 +13,20 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Notetaking app',
-      themeMode: ThemeMode.light,
       theme: ThemeData(
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(
               seedColor: Colors.cyan,
               primary: Colors.cyan,
-              background: const Color.fromARGB(255, 248, 248, 248),
+              background: const Color.fromARGB(255, 216, 250, 255),
               secondary: const Color.fromARGB(255, 157, 234, 244),
               brightness: Brightness.light)),
       home: const HomePage(),
+      // home: const EditNotePage(),
       debugShowCheckedModeBanner: false,
       routes: {
         '/homepage': (context) => const HomePage(),
+        '/editpage': (context) => const EditNotePage()
       },
     );
   }
