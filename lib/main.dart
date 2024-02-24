@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:rimacom_notetaker/pages/edit_note.dart';
 import 'package:rimacom_notetaker/pages/homepage.dart';
 
 void main() {
@@ -26,7 +25,6 @@ class MainApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       routes: {
         '/homepage': (context) => const HomePage(),
-        '/editpage': (context) => const EditNotePage()
       },
     );
   }

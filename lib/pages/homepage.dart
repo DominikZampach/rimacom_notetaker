@@ -15,8 +15,15 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    setVariables();
+    setState(() {
+      setVariables();
+    });
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   void setVariables() async {
@@ -57,11 +64,13 @@ class _HomePageState extends State<HomePage> {
   AppBar appBar(BuildContext context) {
     return AppBar(
       backgroundColor: Theme.of(context).colorScheme.secondary,
-      title: Container(
-        margin: const EdgeInsets.only(top: 10),
-        child: const Text(
-          "Best notetaker ever",
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
+      title: SafeArea(
+        child: Container(
+          margin: const EdgeInsets.only(top: 10),
+          child: const Text(
+            '"Best" notetaker ever',
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
+          ),
         ),
       ),
       centerTitle: true,
