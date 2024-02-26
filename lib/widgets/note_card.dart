@@ -24,6 +24,7 @@ class NoteCard extends StatelessWidget {
                 width: 2),
             borderRadius: const BorderRadius.all(Radius.circular(20))),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -49,7 +50,7 @@ class NoteCard extends StatelessWidget {
               ],
             ),
             Padding(
-              padding: const EdgeInsets.only(top: 0.5, bottom: 1.0),
+              padding: const EdgeInsets.only(top: 0.5, bottom: 1.0, left: 8.0),
               child: Text(
                 "${noteInformations['subtext']}",
                 textAlign: TextAlign.left,

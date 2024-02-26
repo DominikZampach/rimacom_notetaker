@@ -37,27 +37,30 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: appBar(context),
-      body: Container(
-        color: Theme.of(context).colorScheme.background,
-        padding: const EdgeInsets.only(right: 10, left: 10),
-        child: Center(
-          child: ListView(
-            children: [
-              const SizedBox(
-                height: 30,
-              ),
-              for (int i = 0; i < numberOfItems; i++)
-                NoteCard(noteInformations: allNotes[i]),
-              const SizedBox(
-                height: 30,
-              ),
-            ],
+    return PopScope(
+      canPop: false,
+      child: Scaffold(
+        appBar: appBar(context),
+        body: Container(
+          color: Theme.of(context).colorScheme.background,
+          padding: const EdgeInsets.only(right: 10, left: 10),
+          child: Center(
+            child: ListView(
+              children: [
+                const SizedBox(
+                  height: 30,
+                ),
+                for (int i = 0; i < numberOfItems; i++)
+                  NoteCard(noteInformations: allNotes[i]),
+                const SizedBox(
+                  height: 30,
+                ),
+              ],
+            ),
           ),
         ),
+        floatingActionButton: actionButton(),
       ),
-      floatingActionButton: actionButton(),
     );
   }
 
@@ -68,19 +71,24 @@ class _HomePageState extends State<HomePage> {
         child: Container(
           margin: const EdgeInsets.only(top: 10),
           child: const Text(
-            '"Best" notetaker ever',
+            '"Best" notetaker',
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
+            textAlign: TextAlign.center,
           ),
         ),
       ),
       centerTitle: true,
+      leading: Container(),
     );
   }
 
   IconButton actionButton() {
     return IconButton.filled(
         color: Theme.of(context).colorScheme.primary,
-        onPressed: () {},
+        onPressed: () {
+          var uuid = createUUID();
+          // TODO Create logic with creating new note
+        },
         icon: const Icon(
           Icons.add,
           size: 70,

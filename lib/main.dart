@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rimacom_notetaker/pages/create_note.dart';
 import 'package:rimacom_notetaker/pages/homepage.dart';
 
 void main() {
