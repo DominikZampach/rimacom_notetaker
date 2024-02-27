@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:date_picker_plus/date_picker_plus.dart';
 import 'package:rimacom_notetaker/func/func.dart';
+import 'package:rimacom_notetaker/pages/homepage.dart';
 
 class EditNotePage extends StatefulWidget {
   final Map<String, dynamic> noteInformations;
-  const EditNotePage({Key? key, required this.noteInformations})
-      : super(key: key);
+  const EditNotePage({super.key, required this.noteInformations});
 
   @override
   State<EditNotePage> createState() => _EditNotePageState();
@@ -49,11 +49,10 @@ class _EditNotePageState extends State<EditNotePage> {
     setState(() {
       widget.noteInformations["created"] = date;
     });
-    print("Date change saved");
   }
 
   void _onLeadingBackSave(Map<String, dynamic> updatedNoteInformations) async {
-    await saveToJSON(updatedNoteInformations);
+    await saveChangesToJSON(updatedNoteInformations);
     print("Note saved to JSON");
   }
 
@@ -72,13 +71,23 @@ class _EditNotePageState extends State<EditNotePage> {
     return Scaffold(
       appBar: appBarEditPage(context),
       body: bodyEditPage(context),
-      floatingActionButton: IconButton.filled(
-          onPressed: () {},
-          icon: const Icon(
-            Icons.restore_from_trash,
-            size: 12,
-          )),
+      floatingActionButton: floatingEditPage(),
       floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
+    );
+  }
+
+  IconButton floatingEditPage() {
+    return IconButton.filled(
+      onPressed: () {
+        _onLeadingBackSave(widget.noteInformations);
+        deleteNoteByUUID(widget.noteInformations["id"]);
+        Navigator.pushNamed(context, '/homepage');
+      },
+      icon: const Icon(
+        Icons.restore_from_trash,
+        size: 40,
+      ),
+      iconSize: 40,
     );
   }
 
@@ -95,10 +104,12 @@ class _EditNotePageState extends State<EditNotePage> {
                 child: TextField(
                   controller: _controllerTitle,
                   keyboardType: TextInputType.text,
-                  maxLines: 1,
+                  minLines: 1,
+                  maxLines: 2,
                   decoration: const InputDecoration(border: InputBorder.none),
-                  style: const TextStyle(
-                      fontSize: 30, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                      fontSize: FULLPAGE_TITLE_FONT_SIZE,
+                      fontWeight: FontWeight.bold),
                   onChanged: (value) {
                     _saveTitle();
                   },
@@ -109,15 +120,15 @@ class _EditNotePageState extends State<EditNotePage> {
               onTap: () async {
                 DateTime? newDate = await _pickDate(context);
                 _saveDate(newDate);
-                print("Clicked on date");
               },
               child: Padding(
                 padding:
                     const EdgeInsets.only(right: 16.0, top: 12.0, bottom: 10.0),
                 child: Text(
                   "Date: ${widget.noteInformations["created"].day}.${widget.noteInformations["created"].month}. ${widget.noteInformations["created"].year}",
-                  style: const TextStyle(
-                      fontSize: 18, fontStyle: FontStyle.italic),
+                  style: TextStyle(
+                      fontSize: FULLPAGE_DATE_FONT_SIZE,
+                      fontStyle: FontStyle.italic),
                 ),
               ),
             ),
@@ -159,8 +170,10 @@ class _EditNotePageState extends State<EditNotePage> {
             child: const Text("Edit note")),
       ),
       centerTitle: true,
-      titleTextStyle: const TextStyle(
-          fontWeight: FontWeight.bold, fontSize: 24, color: Colors.black),
+      titleTextStyle: TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: APPBAR_FONT_SIZE,
+          color: Colors.black),
       leading: IconButton(
           onPressed: () {
             _onLeadingBackSave(widget.noteInformations);

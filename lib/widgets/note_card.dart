@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:rimacom_notetaker/pages/edit_note.dart';
 
+double? CARD_TITLE_FONT_SIZE = 25;
+double? CARD_SUBTEXT_FONT_SIZE = 22;
+double? CARD_DATE_FONT_SIZE = 20;
+
 class NoteCard extends StatelessWidget {
   final Map<String, dynamic> noteInformations;
   const NoteCard({Key? key, required this.noteInformations}) : super(key: key);
@@ -26,35 +30,36 @@ class NoteCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Padding(
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+              Flexible(
+                child: Container(
                   padding:
-                      const EdgeInsets.only(right: 8.0, left: 8.0, top: 3.0),
+                      const EdgeInsets.only(right: 2.0, left: 8.0, top: 3.0),
                   child: Text(
                     noteInformations['title'],
-                    style: const TextStyle(
-                        fontWeight: FontWeight.bold, fontSize: 30),
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: CARD_TITLE_FONT_SIZE),
                   ),
                 ),
-                Padding(
-                  padding:
-                      const EdgeInsets.only(right: 8.0, left: 8.0, top: 3.0),
-                  child: Text(
-                    '${noteInformations["created"].day}.${noteInformations["created"].month}. ${noteInformations["created"].year}',
-                    style: const TextStyle(
-                        fontWeight: FontWeight.w300, fontSize: 20),
-                  ),
-                )
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 0.5, bottom: 1.0, left: 8.0),
+              ),
+              Container(
+                padding: const EdgeInsets.only(right: 8.0, left: 2.0, top: 3.0),
+                child: Text(
+                  '${noteInformations["created"].day}.${noteInformations["created"].month}. ${noteInformations["created"].year}',
+                  style: TextStyle(
+                      fontWeight: FontWeight.w300,
+                      fontSize: CARD_DATE_FONT_SIZE),
+                ),
+              ),
+            ]),
+            Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.only(top: 2.5, bottom: 6.0, left: 8.0),
               child: Text(
                 "${noteInformations['subtext']}",
                 textAlign: TextAlign.left,
-                style: const TextStyle(fontSize: 25),
+                style: TextStyle(fontSize: CARD_SUBTEXT_FONT_SIZE),
               ),
             )
           ],

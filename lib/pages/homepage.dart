@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:rimacom_notetaker/func/func.dart';
+import 'package:rimacom_notetaker/pages/create_note.dart';
 import 'package:rimacom_notetaker/widgets/note_card.dart';
 
+double? FULLPAGE_TITLE_FONT_SIZE = 25;
+double? FULLPAGE_DATE_FONT_SIZE = 18;
+double? APPBAR_FONT_SIZE = 26;
+
 final class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  const HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -27,8 +32,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   void setVariables() async {
-    int numberOfItemsCall = await getNumberOfItems();
     List allNotesCall = await getAllNotes();
+    int numberOfItemsCall = await getNumberOfItems();
     setState(() {
       numberOfItems = numberOfItemsCall;
       allNotes = allNotesCall;
@@ -41,25 +46,29 @@ class _HomePageState extends State<HomePage> {
       canPop: false,
       child: Scaffold(
         appBar: appBar(context),
-        body: Container(
-          color: Theme.of(context).colorScheme.background,
-          padding: const EdgeInsets.only(right: 10, left: 10),
-          child: Center(
-            child: ListView(
-              children: [
-                const SizedBox(
-                  height: 30,
-                ),
-                for (int i = 0; i < numberOfItems; i++)
-                  NoteCard(noteInformations: allNotes[i]),
-                const SizedBox(
-                  height: 30,
-                ),
-              ],
-            ),
-          ),
-        ),
+        body: bodyHomepage(context),
         floatingActionButton: actionButton(),
+      ),
+    );
+  }
+
+  Container bodyHomepage(BuildContext context) {
+    return Container(
+      color: Theme.of(context).colorScheme.background,
+      padding: const EdgeInsets.only(right: 10, left: 10),
+      child: Center(
+        child: ListView(
+          children: [
+            const SizedBox(
+              height: 25,
+            ),
+            for (int i = 0; i < numberOfItems; i++)
+              NoteCard(noteInformations: allNotes[i]),
+            const SizedBox(
+              height: 25,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -70,9 +79,10 @@ class _HomePageState extends State<HomePage> {
       title: SafeArea(
         child: Container(
           margin: const EdgeInsets.only(top: 10),
-          child: const Text(
+          child: Text(
             '"Best" notetaker',
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
+            style: TextStyle(
+                fontWeight: FontWeight.bold, fontSize: APPBAR_FONT_SIZE),
             textAlign: TextAlign.center,
           ),
         ),
@@ -87,6 +97,8 @@ class _HomePageState extends State<HomePage> {
         color: Theme.of(context).colorScheme.primary,
         onPressed: () {
           var uuid = createUUID();
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => CreateNotePage(uuid: uuid)));
           // TODO Create logic with creating new note
         },
         icon: const Icon(

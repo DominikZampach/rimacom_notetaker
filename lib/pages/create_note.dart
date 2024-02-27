@@ -1,18 +1,112 @@
 import 'package:flutter/material.dart';
 import 'package:date_picker_plus/date_picker_plus.dart';
+import 'package:rimacom_notetaker/pages/homepage.dart';
 
 class CreateNotePage extends StatefulWidget {
   final String uuid;
-  const CreateNotePage({Key? key, required this.uuid}) : super(key: key);
+  const CreateNotePage({super.key, required this.uuid});
 
   @override
   State<CreateNotePage> createState() => _CreateNotePageState();
 }
 
 class _CreateNotePageState extends State<CreateNotePage> {
+  late TextEditingController _controllerText;
+  late TextEditingController _controllerTitle;
+  late String text = "";
+  late String title = "";
+  late DateTime? date;
+
+  @override
+  void initState() {
+    _controllerText = TextEditingController(text: text);
+    _controllerTitle = TextEditingController(text: title);
+    date = DateTime.now();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _controllerText.dispose();
+    _controllerTitle.dispose();
+    super.dispose();
+  }
+
+  Future<DateTime?> _pickDate(BuildContext context) async {
+    final DateTime? date = await showDatePickerDialog(
+        context: context,
+        initialDate: DateTime.now(),
+        selectedDate: DateTime.now(),
+        maxDate: DateTime.now(),
+        minDate: DateTime(2000, 1, 1));
+    return date;
+  }
+
+  void _saveTitle() {
+    setState(() {
+      title = _controllerTitle.text;
+    });
+  }
+
+  void _saveDate(DateTime? newDate) {
+    setState(() {
+      date = newDate;
+    });
+  }
+
+  void _onLeadingBackSave() {
+    // TODO add functionalities that will convert this into standart object and
+    // TODO save it into JSON file for easy management (dont forget on itemCount!)
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(appBar: appBarCreatePage(context));
+    return Scaffold(
+      appBar: appBarCreatePage(context),
+      body: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Flexible(
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                      left: 16.0, top: 12.0, bottom: 10.0),
+                  child: TextField(
+                    controller: _controllerTitle,
+                    keyboardType: TextInputType.text,
+                    minLines: 1,
+                    maxLines: 2,
+                    style: TextStyle(
+                        fontSize: FULLPAGE_TITLE_FONT_SIZE,
+                        fontWeight: FontWeight.bold),
+                    onChanged: (value) {
+                      _saveTitle();
+                    },
+                  ),
+                ),
+              ),
+              GestureDetector(
+                onTap: () async {
+                  DateTime? newDate = await _pickDate(context);
+                  _saveDate(newDate);
+                },
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                      right: 16.0, top: 12.0, bottom: 10.0),
+                  child: Text(
+                    "Date: ${date?.day}.${date?.month}. ${date?.year}",
+                    style: TextStyle(
+                        fontSize: FULLPAGE_DATE_FONT_SIZE,
+                        fontStyle: FontStyle.italic),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 
   AppBar appBarCreatePage(BuildContext context) {
@@ -24,11 +118,13 @@ class _CreateNotePageState extends State<CreateNotePage> {
             child: const Text("Create note")),
       ),
       centerTitle: true,
-      titleTextStyle: const TextStyle(
-          fontWeight: FontWeight.bold, fontSize: 24, color: Colors.black),
+      titleTextStyle: TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: APPBAR_FONT_SIZE,
+          color: Colors.black),
       leading: IconButton(
           onPressed: () {
-            // TODO Add function to save into json
+            _onLeadingBackSave();
             Navigator.pushNamed(context, '/homepage');
           },
           icon: const Icon(

@@ -1,25 +1,25 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:uuid/uuid.dart';
-import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 
 Map<String, dynamic> trainingData = {
   "itemCount": 2,
   "items": [
     {
-      "id": "8493871539d68992",
+      "id": "84938715-a711-4943-81f6-5f1239d156489",
       "title": "Poznámka",
       "text":
           "Petr je gej, mega gej, je to kokot, nenavidim petra, je to nejvetsi kokot",
-      "subtext": "Petr je gej, mega ge",
+      "subtext": "Petr je gej, mega ge...",
       "created": "2024-02-20 00:00:00"
     },
     {
       "id": "84938715-a711-4943-81f6-5f1239d68992",
-      "title": "Test title",
-      "text": "sdfasdfasdfasdfasdfafadsfsdfa\nDFASDFASDFASDFASDFASafasdf",
-      "subtext": "sdfasdfasdfasdfasdfa",
+      "title": "Test",
+      "text":
+          "Petrus, nejde nic, kokotko, picus, maja, vojta, pavel davel, hulejnik, rosnik",
+      "subtext": "Petrus, nejde nic, k...",
       "created": "2024-02-20 00:00:00"
     },
   ]
@@ -29,7 +29,6 @@ Future<String> loadJSON() async {
   Directory documentsDirectory = await getApplicationDocumentsDirectory();
   String filePath = '${documentsDirectory.path}/data.json';
   File file = File(filePath);
-  await createDataJSON();
   String jsonString = await file.readAsString();
   return jsonString;
 }
@@ -62,7 +61,10 @@ Future<int> getNumberOfItems() async {
 
 Future<List> getAllNotes() async {
   await createDataJSON();
-  String jsonString = await loadJSON();
+  String jsonString = "";
+  while (jsonString == "") {
+    jsonString = await loadJSON();
+  }
   Map<String, dynamic> data = json.decode(jsonString);
   List output = [];
   for (int i = 0; i < int.parse(data['itemCount'].toString()); i++) {
@@ -78,8 +80,11 @@ Future<List> getAllNotes() async {
   return output;
 }
 
-Future<void> saveToJSON(Map<String, dynamic> data) async {
-  String jsonString = await loadJSON();
+Future<void> saveChangesToJSON(Map<String, dynamic> data) async {
+  String jsonString = "";
+  while (jsonString == "") {
+    jsonString = await loadJSON();
+  }
   Map<String, dynamic> loadedJSON = json.decode(jsonString);
   for (int i = 0; i < loadedJSON['itemCount']; i++) {
     if (loadedJSON["items"][i]["id"] == data["id"]) {
@@ -94,10 +99,10 @@ Future<void> saveToJSON(Map<String, dynamic> data) async {
 
 String createSubtext(String text) {
   String output;
-  if (text.length == 20) {
-    output = text.substring(0, 20);
-  } else if (text.length > 21) {
-    output = "${text.substring(0, 20)}...";
+  if (text.length == 30) {
+    output = text.substring(0, 30);
+  } else if (text.length > 31) {
+    output = "${text.substring(0, 30)}...";
   } else {
     output = text;
   }
@@ -127,4 +132,19 @@ Future<bool> doesDataJsonExist() async {
   String filePath = '${documentsDirectory.path}/data.json';
   File file = File(filePath);
   return await file.exists();
+}
+
+void deleteNoteByUUID(String uuid) async {
+  String jsonString = await loadJSON();
+  Map<String, dynamic> loadedData = await json.decode(jsonString);
+  for (int i = 0; i < loadedData["itemCount"]; i++) {
+    if (loadedData["items"][i]["id"] == uuid) {
+      loadedData["items"].removeAt(i);
+      loadedData["itemCount"]--;
+      print(loadedData);
+      await saveJSON(loadedData);
+      return;
+    }
+  }
+  await saveJSON(loadedData);
 }
