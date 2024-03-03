@@ -31,22 +31,16 @@ class _EditNotePageState extends State<EditNotePage> {
   }
 
   void _saveNote() {
-    setState(() {
-      widget.currentNote.text = _controllerText.text;
-      widget.currentNote.subtext = createSubtext(_controllerText.text);
-    });
+    widget.currentNote.text = _controllerText.text;
+    widget.currentNote.subtext = createSubtext(_controllerText.text);
   }
 
   void _saveTitle() {
-    setState(() {
-      widget.currentNote.title = _controllerTitle.text;
-    });
+    widget.currentNote.title = _controllerTitle.text;
   }
 
   void _saveDate(DateTime? date) {
-    setState(() {
-      widget.currentNote.created = date!;
-    });
+    widget.currentNote.created = date!;
   }
 
   void _onLeadingBackSave() async {
