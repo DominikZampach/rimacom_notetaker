@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:rimacom_notetaker/func/note.dart';
 import 'package:uuid/uuid.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -25,12 +26,25 @@ Map<String, dynamic> trainingData = {
   ]
 };
 
+Map<String, dynamic> defaultInput = {"itemCount": 0, "items": []};
+
 Future<String> loadJSON() async {
   Directory documentsDirectory = await getApplicationDocumentsDirectory();
   String filePath = '${documentsDirectory.path}/data.json';
   File file = File(filePath);
   String jsonString = await file.readAsString();
   return jsonString;
+}
+
+Map<String, dynamic> convertNoteToMap(Note note) {
+  Map<String, dynamic> output = {
+    'id': note.id,
+    'title': note.title,
+    'text': note.text,
+    'subtext': note.subtext,
+    'created': note.created
+  };
+  return output;
 }
 
 Future<void> saveJSON(Map<String, dynamic> loadedJSON) async {
@@ -40,7 +54,6 @@ Future<void> saveJSON(Map<String, dynamic> loadedJSON) async {
   Directory documentsDirectory = await getApplicationDocumentsDirectory();
   String path = documentsDirectory.path;
   File file = File('$path/data.json');
-  print(file.path);
   await file.writeAsString(updatedJSONString);
 }
 
@@ -55,46 +68,46 @@ Map<String, dynamic> createStringOfDatetimeObjects(
 
 Future<int> getNumberOfItems() async {
   String jsonString = await loadJSON();
-  Map<String, dynamic> data = await json.decode(jsonString);
-  return int.parse(data['itemCount'].toString());
+  Map<String, dynamic> loadedJson = json.decode(jsonString);
+  return loadedJson['itemCount'];
 }
 
-Future<List> getAllNotes() async {
+Future<List<Note>> getAllNotes() async {
   await createDataJSON();
   String jsonString = "";
+  jsonString = await loadJSON();
   while (jsonString == "") {
-    jsonString = await loadJSON();
+    sleep(const Duration(milliseconds: 10));
   }
-  Map<String, dynamic> data = json.decode(jsonString);
-  List output = [];
-  for (int i = 0; i < int.parse(data['itemCount'].toString()); i++) {
-    Map<String, dynamic> currentItem = {
-      'id': data['items'][i]['id'],
-      'title': data['items'][i]['title'],
-      'text': data['items'][i]['text'],
-      'subtext': createSubtext(data['items'][i]['text']),
-      'created': DateTime.parse(data['items'][i]['created']),
-    };
+  Map<String, dynamic> loadedJson = json.decode(jsonString);
+  List<Note> output = [];
+  for (int i = 0; i < int.parse(loadedJson['itemCount'].toString()); i++) {
+    Note currentItem = Note(
+        loadedJson['items'][i]['id'].toString(),
+        loadedJson['items'][i]['title'].toString(),
+        loadedJson['items'][i]['text'].toString(),
+        createSubtext(loadedJson['items'][i]['text']),
+        DateTime.parse(loadedJson['items'][i]['created']));
     output.add(currentItem);
   }
   return output;
 }
 
-Future<void> saveChangesToJSON(Map<String, dynamic> data) async {
+Future<void> saveOneItemChange(Note currentNote) async {
+  Map<String, dynamic> currentNoteObject = convertNoteToMap(currentNote);
   String jsonString = "";
+  jsonString = await loadJSON();
   while (jsonString == "") {
-    jsonString = await loadJSON();
+    sleep(const Duration(milliseconds: 10));
   }
   Map<String, dynamic> loadedJSON = json.decode(jsonString);
   for (int i = 0; i < loadedJSON['itemCount']; i++) {
-    if (loadedJSON["items"][i]["id"] == data["id"]) {
-      // Item in json file found
-      loadedJSON["items"][i] = data;
-      // Override JSON file with loadedJSON
-      await saveJSON(loadedJSON);
+    if (loadedJSON["items"][i]["id"] == currentNote.id) {
+      loadedJSON["items"][i] = currentNoteObject;
       break;
     }
   }
+  await saveJSON(loadedJSON);
 }
 
 String createSubtext(String text) {
@@ -120,11 +133,9 @@ Future<void> createDataJSON() async {
   }
   Directory documentsDirectory = await getApplicationDocumentsDirectory();
   String filePath = '${documentsDirectory.path}/data.json';
-  print(filePath);
   File file = File(filePath);
   await file
-      .writeAsString(json.encode(trainingData)); // TODO Change training data
-  print('data.json file created at: $filePath');
+      .writeAsString(json.encode(defaultInput));
 }
 
 Future<bool> doesDataJsonExist() async {
@@ -136,15 +147,13 @@ Future<bool> doesDataJsonExist() async {
 
 void deleteNoteByUUID(String uuid) async {
   String jsonString = await loadJSON();
-  Map<String, dynamic> loadedData = await json.decode(jsonString);
+  Map<String, dynamic> loadedData = json.decode(jsonString);
   for (int i = 0; i < loadedData["itemCount"]; i++) {
     if (loadedData["items"][i]["id"] == uuid) {
       loadedData["items"].removeAt(i);
       loadedData["itemCount"]--;
-      print(loadedData);
       await saveJSON(loadedData);
       return;
     }
   }
-  await saveJSON(loadedData);
 }

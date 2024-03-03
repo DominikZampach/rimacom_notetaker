@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rimacom_notetaker/func/note.dart';
 import 'package:rimacom_notetaker/pages/edit_note.dart';
 
 double? CARD_TITLE_FONT_SIZE = 25;
@@ -6,16 +7,17 @@ double? CARD_SUBTEXT_FONT_SIZE = 22;
 double? CARD_DATE_FONT_SIZE = 20;
 
 class NoteCard extends StatelessWidget {
-  final Map<String, dynamic> noteInformations;
-  const NoteCard({Key? key, required this.noteInformations}) : super(key: key);
+  final Note currentNote;
+  const NoteCard({super.key, required this.currentNote});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
         Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) =>
-                EditNotePage(noteInformations: noteInformations)));
+            builder: (context) => EditNotePage(
+                  currentNote: currentNote,
+                )));
       },
       child: Container(
         // TODO přidat Gesture
@@ -36,7 +38,7 @@ class NoteCard extends StatelessWidget {
                   padding:
                       const EdgeInsets.only(right: 2.0, left: 8.0, top: 3.0),
                   child: Text(
-                    noteInformations['title'],
+                    currentNote.title,
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: CARD_TITLE_FONT_SIZE),
@@ -46,7 +48,7 @@ class NoteCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.only(right: 8.0, left: 2.0, top: 3.0),
                 child: Text(
-                  '${noteInformations["created"].day}.${noteInformations["created"].month}. ${noteInformations["created"].year}',
+                  '${currentNote.created.day}.${currentNote.created.month}. ${currentNote.created.year}',
                   style: TextStyle(
                       fontWeight: FontWeight.w300,
                       fontSize: CARD_DATE_FONT_SIZE),
@@ -57,7 +59,7 @@ class NoteCard extends StatelessWidget {
               alignment: Alignment.center,
               padding: const EdgeInsets.only(top: 2.5, bottom: 6.0, left: 8.0),
               child: Text(
-                "${noteInformations['subtext']}",
+                currentNote.subtext,
                 textAlign: TextAlign.left,
                 style: TextStyle(fontSize: CARD_SUBTEXT_FONT_SIZE),
               ),

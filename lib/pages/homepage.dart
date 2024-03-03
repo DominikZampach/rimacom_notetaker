@@ -6,6 +6,7 @@ import 'package:rimacom_notetaker/widgets/note_card.dart';
 double? FULLPAGE_TITLE_FONT_SIZE = 25;
 double? FULLPAGE_DATE_FONT_SIZE = 18;
 double? APPBAR_FONT_SIZE = 26;
+double? FULLPAGE_TEXT_FONT_SIZE = 20;
 
 final class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -63,7 +64,7 @@ class _HomePageState extends State<HomePage> {
               height: 25,
             ),
             for (int i = 0; i < numberOfItems; i++)
-              NoteCard(noteInformations: allNotes[i]),
+              NoteCard(currentNote: allNotes[i]),
             const SizedBox(
               height: 25,
             ),

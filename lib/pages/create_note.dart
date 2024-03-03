@@ -1,5 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:date_picker_plus/date_picker_plus.dart';
+import 'package:rimacom_notetaker/func/func.dart';
+import 'package:rimacom_notetaker/func/note.dart';
 import 'package:rimacom_notetaker/pages/homepage.dart';
 
 class CreateNotePage extends StatefulWidget {
@@ -48,15 +52,31 @@ class _CreateNotePageState extends State<CreateNotePage> {
     });
   }
 
+  void _saveNote() {
+    setState(() {
+      text = _controllerText.text;
+    });
+  }
+
   void _saveDate(DateTime? newDate) {
     setState(() {
       date = newDate;
     });
   }
 
-  void _onLeadingBackSave() {
-    // TODO add functionalities that will convert this into standart object and
-    // TODO save it into JSON file for easy management (dont forget on itemCount!)
+  void _onLeadingBackSave() async {
+    String jsonString = await loadJSON();
+    Map<String, dynamic> data = await json.decode(jsonString);
+
+    Note currentItem =
+        Note(widget.uuid, title, text, createSubtext(text), date!);
+    Map<String, dynamic> currentItemObject = convertNoteToMap(currentItem);
+
+    data["items"].add(currentItemObject);
+    data["itemCount"]++;
+
+    await saveJSON(data);
+    return;
   }
 
   @override
@@ -103,6 +123,29 @@ class _CreateNotePageState extends State<CreateNotePage> {
                 ),
               ),
             ],
+          ),
+          Container(
+            decoration: BoxDecoration(
+                shape: BoxShape.rectangle,
+                border: Border.all(
+                    color: Theme.of(context)
+                        .colorScheme
+                        .secondary
+                        .withOpacity(0.8))),
+            child: Padding(
+              padding:
+                  const EdgeInsets.only(right: 12.0, left: 12.0, bottom: 12.0),
+              child: TextField(
+                controller: _controllerText,
+                keyboardType: TextInputType.multiline,
+                maxLines: null,
+                style: TextStyle(fontSize: FULLPAGE_TEXT_FONT_SIZE),
+                decoration: const InputDecoration(border: InputBorder.none),
+                onChanged: (value) {
+                  _saveNote();
+                },
+              ),
+            ),
           ),
         ],
       ),
