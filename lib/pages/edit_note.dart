@@ -43,7 +43,7 @@ class _EditNotePageState extends State<EditNotePage> {
     widget.currentNote.created = date!;
   }
 
-  void _onLeadingBackSave() async {
+  Future<void> _onLeadingBackSave() async {
     await saveOneItemChange(widget.currentNote);
   }
 
@@ -164,10 +164,14 @@ class _EditNotePageState extends State<EditNotePage> {
           fontWeight: FontWeight.bold,
           fontSize: APPBAR_FONT_SIZE,
           color: Colors.black),
+      automaticallyImplyLeading: true,
       leading: IconButton(
-          onPressed: () {
-            _onLeadingBackSave();
-            Navigator.pushNamed(context, '/homepage');
+          onPressed: () async {
+            await _onLeadingBackSave();
+
+            if (mounted) {
+              Navigator.pushNamed(context, '/homepage');
+            }
           },
           icon: const Icon(
             Icons.arrow_back_ios_new,

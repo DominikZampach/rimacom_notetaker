@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -64,7 +65,7 @@ class _CreateNotePageState extends State<CreateNotePage> {
     });
   }
 
-  void _onLeadingBackSave() async {
+  Future<void> _onLeadingBackSave() async {
     String jsonString = await loadJSON();
     Map<String, dynamic> data = await json.decode(jsonString);
 
@@ -166,9 +167,12 @@ class _CreateNotePageState extends State<CreateNotePage> {
           fontSize: APPBAR_FONT_SIZE,
           color: Colors.black),
       leading: IconButton(
-          onPressed: () {
-            _onLeadingBackSave();
-            Navigator.pushNamed(context, '/homepage');
+          onPressed: () async {
+            await _onLeadingBackSave();
+
+            if (mounted) {
+              Navigator.pushNamed(context, '/homepage');
+            }
           },
           icon: const Icon(
             Icons.arrow_back_ios_new,
