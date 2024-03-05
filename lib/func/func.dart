@@ -134,8 +134,7 @@ Future<void> createDataJSON() async {
   Directory documentsDirectory = await getApplicationDocumentsDirectory();
   String filePath = '${documentsDirectory.path}/data.json';
   File file = File(filePath);
-  await file
-      .writeAsString(json.encode(defaultInput));
+  await file.writeAsString(json.encode(defaultInput));
 }
 
 Future<bool> doesDataJsonExist() async {
@@ -145,7 +144,7 @@ Future<bool> doesDataJsonExist() async {
   return await file.exists();
 }
 
-void deleteNoteByUUID(String uuid) async {
+Future<void> deleteNoteByUUID(String uuid) async {
   String jsonString = await loadJSON();
   Map<String, dynamic> loadedData = json.decode(jsonString);
   for (int i = 0; i < loadedData["itemCount"]; i++) {

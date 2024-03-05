@@ -40,7 +40,12 @@ class _EditNotePageState extends State<EditNotePage> {
   }
 
   void _saveDate(DateTime? date) {
-    widget.currentNote.created = date!;
+    if (date == null) {
+      return;
+    }
+    setState(() {
+      widget.currentNote.created = date;
+    });
   }
 
   Future<void> _onLeadingBackSave() async {
@@ -69,14 +74,13 @@ class _EditNotePageState extends State<EditNotePage> {
 
   IconButton floatingEditPage() {
     return IconButton.filled(
-      onPressed: () {
-        deleteNoteByUUID(widget.currentNote.id);
+      onPressed: () async {
+        await deleteNoteByUUID(widget.currentNote.id);
+        // ignore: use_build_context_synchronously
         Navigator.pushNamed(context, '/homepage');
       },
-      icon: const Icon(
-        Icons.restore_from_trash,
-        size: 40,
-      ),
+      icon:
+          const Icon(Icons.restore_from_trash, size: 55, color: Colors.white70),
       iconSize: 40,
     );
   }

@@ -104,7 +104,7 @@ class _HomePageState extends State<HomePage> {
         },
         icon: const Icon(
           Icons.add,
-          size: 70,
+          size: 55,
           color: Colors.white70,
         ));
   }
